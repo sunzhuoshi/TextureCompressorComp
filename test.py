@@ -28,9 +28,16 @@ def astc_encode_astcenc(cmd_template, bmp_path, astc_path, block_size):
     os.system(cmd)
 
 def astc_encode_ispc(bmp_path, astc_path, block_size):
-    ispc_cmd = 'test_astc.exe'
+    print('testing encoding via ispc(avx2)...')
+    ispc_cmd = 'ispc-avx2\\test_astc.exe'
     cmd = '{} {} {} {}'.format(ispc_cmd, bmp_path, astc_path, block_size) 
+    print(cmd)
     os.system(cmd)
+    
+    print('\ntesting encoding via ispc(avx512)...')
+    ispc_cmd = 'ispc-avx512skx-i32x16\\test_astc.exe'
+    cmd = '{} {} {} {}'.format(ispc_cmd, bmp_path, astc_path, block_size) 
+    os.system(cmd)    
     
 def astc_decode(astc_path):
     tga_path = replace_path(astc_path, '.astc', '.tga')
@@ -65,7 +72,6 @@ if __name__ == '__main__':
         bmp_path = sys.argv[1]
         block_size = sys.argv[2]
 
-        print('testing encoding via ispc...')
         astc_path = replace_path(bmp_path, '.bmp', '_' + block_size + '_ispc.astc')
         astc_encode_ispc(bmp_path, astc_path, block_size)
         tga_path = astc_decode(astc_path)
